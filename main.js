@@ -1095,22 +1095,20 @@ const app = {
 
 
         // Set background for header when scroll
-        appContainers.forEach(appContainer => {
-            appContainer.onscroll = function() {
-                const scrollTop = appContainer.scrollY || appContainer.scrollTop;
-                if(scrollTop > 5) {
-                    Object.assign(header.style, {
-                        backgroundColor: 'var(--layout-bg)',
-                        boxShadow: '0 1px 1px rgba(0, 0, 0, 0.08)',
-                    })
-                } else {
-                    Object.assign(header.style, {
-                        backgroundColor: 'transparent',
-                        boxShadow: 'none',
-                    })
-                }
+        document.onscroll = function() {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            if(scrollTop > 5) {
+                Object.assign(header.style, {
+                    backgroundColor: 'var(--layout-bg)',
+                    boxShadow: '0 1px 1px rgba(0, 0, 0, 0.08)',
+                })
+            } else {
+                Object.assign(header.style, {
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
+                })
             }
-        })
+        }
 
         // Handle when click play
         playBtns.forEach(playBtn => {
@@ -1341,11 +1339,15 @@ const app = {
             const popDownBtn = e.target.closest('.popup__action-btn.btn--pop-down')
             if(!player.classList.contains('open-popup') &&!actionNode &&!authorNode && !controlNode && !progressNode && !optionNode && !popUpNode) {
                 player.classList.add('open-popup')
+                setTimeout(function() {
+                    App.style.display = 'none';
+                }, 300)
             }
             // Handle close pop-up window
             if(popUpNode) {
                 if(popDownBtn) {
                     player.classList.remove('open-popup')
+                    App.style.display = 'block'
                 }
             }
         }
