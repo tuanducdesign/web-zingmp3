@@ -1,3 +1,5 @@
+'use strict';
+
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
@@ -92,6 +94,7 @@ const app = {
     isChangeVolume: false,
     scrollToRight: [true, true, true, true, true, true, true, true, true, true], //use when click move btn
     currentScreen: [],
+    currentIndex: 0,
     currentPlaylist: 0, //choose playlist
     themeList: 0, //Theme list index (have > 1 lists)
     currentTheme: 0, //Current theme index in theme list
@@ -385,7 +388,7 @@ const app = {
                                                     <div class="icon-overlay"></div>
                                                 </i>
                                             </div>
-                                            <h3 class="row__info-creator text-center">${artist.folowers} quan tâm</h3>
+                                            <h3 class="row__info-creator text-center">${artist.followers} quan tâm</h3>
                                         </div>
                                     </div>
                                     <div class="row__item-btn">
@@ -490,7 +493,7 @@ const app = {
                                         </svg>
                                         <div class="row__item-display is-rounded">
                                             <div class="row__item-img img--square is-rounded" style="background: url('${radio.image}') no-repeat center center / contain"></div>
-                                            <div class="row__item-actions">
+                                            <div class="row__item-actions hide-on-mobile">
                                                 <div class="btn--play-playlist">
                                                     <div class="control-btn btn-toggle-play">
                                                         <i class="bi bi-play-fill icon-play"></i>
@@ -977,6 +980,16 @@ const app = {
                                         style="background: url('${post.image}') no-repeat center center / cover">
                                     </div>
                                 </div>
+                                <div class="story__item-action">
+                                    <div class="action-btn story-btn--heart">
+                                        <i class="btn--icon icon--heart bi bi-heart"></i>
+                                        <span class="action__number">${Math.floor(Math.random() * 1000)}</span>
+                                    </div>
+                                    <div class="action-btn story-btn--comment">
+                                        <i class="btn--icon icon--comment bi bi-chat-dots"></i>
+                                        <span class="action__number">${Math.floor(Math.random() * 100)}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     `
@@ -1067,6 +1080,7 @@ const app = {
         const favArtistMove = $('.container__header-actions.fav-artist--move');
         const chartExpandBtn = $('.button.charts__expand-btn');
         const chartSongContainer = $('.row.chart--container');
+        const storyActions = Array.from($$('.story__item-action'))
 
 
         // hide and visible shadow of subnav on sidebar
@@ -1194,7 +1208,6 @@ const app = {
                     progressChild.onchange = function(e) {
                         const seekTime = e.target.value * audio.duration / 100;
                         audio.currentTime = seekTime;
-                        _this.isSeeking = false;
                     }
                 })
             }
@@ -1225,13 +1238,24 @@ const app = {
 
 
         function seekStart() {
-            _this.isSeeking = true;
+            if(audio.duration) {
+                _this.isSeeking = true;
+            }
+        }
+
+        function seekEnd() {
+            _this.isSeeking = false;
         }
 
         // progressBlock.addEventListener('touchstart', seekStart);
         progress.forEach(progressChild => {
             progressChild.onmousedown = seekStart;
             progressChild.ontouchstart = seekStart;
+        })
+
+        progress.forEach(progressChild => {
+            progressChild.onmouseup = seekEnd;
+            progressChild.ontouchend = seekEnd;
         })
 
 
@@ -1504,6 +1528,7 @@ const app = {
 
         Array.from(headerNavTitles).forEach((headerNavTitle,index) => {
             headerNavTitle.onclick = (e) => {
+                appContainers[0].scrollTop = 0
                 $('.content__navbar-item.active').classList.remove('active')
                 navbarItems[index + 1].classList.add('active')
 
@@ -1513,7 +1538,7 @@ const app = {
         })
 
 
-        //**  Handle when click button move Album, Playlist, MV and Artist on tab HOME
+        //***  Handle when click button move Album, Playlist, MV and Artist on tab HOME
         // Playlist
         
         playlistScrollBtns[0].onclick = function() {
@@ -1687,11 +1712,16 @@ const app = {
         // Handle when click on sidebar items 
         sidebarNavItems.forEach((sidebarNavItem, index) => {
             sidebarNavItem.onclick = (e) => {
+                Object.assign(header.style, {
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
+                })
                 $('.app__container.active').classList.remove('active')
                 appContainers[index].classList.add('active')
 
                 $('.sidebar__nav .sidebar__nav-item.active').classList.remove('active')
                 sidebarNavItem.classList.add('active')
+                appContainers[index].scrollTop = 0;
             }
         })
 
@@ -1915,6 +1945,31 @@ const app = {
         }
 
 
+        // ****** Tab following
+        storyActions.forEach(storyAction => {
+            storyAction.onclick = (e) => {
+                const btnHeart = e.target.closest('.story-btn--heart .btn--icon.icon--heart')
+                const btnComment = e.target.closest('.story-btn--comment .btn--icon.icon--comment')
+                if(btnHeart) {
+                    const numberNode = btnHeart.parentElement.querySelector('.action__number')
+                    const numberLike = numberNode.innerText
+                    if(btnHeart.classList.contains('primary')) {
+                        btnHeart.classList.remove('primary')
+                        btnHeart.classList.replace('bi-heart-fill', 'bi-heart')
+                        numberNode.innerText = Number(numberLike) - 1
+                    } else {
+                        btnHeart.classList.add('primary')
+                        btnHeart.classList.replace('bi-heart', 'bi-heart-fill')
+                        numberNode.innerText = Number(numberLike) + 1
+                    }
+                }
+                if(btnComment) {
+                    showNotificationToast('Tính năng hiện tại chưa được cập nhật, bạn vui lòng thông cảm!')
+                }
+            }
+        })
+
+
     },
 
     loadCurrentSongPlaylist (index) {
@@ -1975,7 +2030,7 @@ const app = {
     },
 
     setPlayerInfoWidth() {
-        const animateTitleItems = $$('.player__title-animate .title__item')
+        // const animateTitleItems = $$('.player__title-animate .title__item')
         const playerSongTitles = Array.from($$('.player__song-title.info__title'))
         playerSongTitles.forEach(playerSongTitle => {
             playerSongTitle.style.width = songAnimateTitles[0].offsetWidth / 2 + 'px'

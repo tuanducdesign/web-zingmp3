@@ -1,5 +1,6 @@
 /* Main CSS */
 .app {
+    display: flex;
     overflow: hidden;
     background-repeat: repeat;
     background-size: 1920px auto;
@@ -48,7 +49,7 @@
 .sidebar__logo-img {
     height: 34px;
     display: block;
-    margin-left: 23px;
+    margin-left: 31px;
     color: var(--text-color);
 }
 
@@ -150,6 +151,7 @@
     width: 100%;
     margin: 10px 0 0;
     overflow: hidden overlay;
+    overscroll-behavior: contain;
     will-change: scroll-position;
     overscroll-behavior: contain;
 }
@@ -557,7 +559,6 @@
     margin: auto;
     outline: none;
     display: flex;
-    display: block;
     cursor: pointer;
     border-radius: 50%;
     background: var(--bg-content-color);
@@ -590,9 +591,16 @@
     margin: auto;
     padding: 5px;
     display: block;
+    text-align: center;
     font-size: 1.8rem;
     line-height: 1.8rem;
     color: var(--text-color);
+}
+
+.header__nav-icon:before {
+    display: block;
+    width: 100%;
+    line-height: 2rem;
 }
 
 .header__nav-btn.btn--nav-setting {
@@ -828,9 +836,9 @@
 
 /* Content CSS */
 .content {
-    padding: 205px 4vw 0;
     display: flex;
     flex-direction: column;
+    padding: 205px 0 0;
 }
 
 .content__navbar {
@@ -863,7 +871,7 @@
     height: 100%;
     cursor: pointer;
     min-width: 100px;
-    padding: 7px 0;
+    padding: 7px 25px;
     text-align: center;
     border-radius: 15px;
     color: var(--text-color);
@@ -876,11 +884,13 @@
 }
 
 .content__navbar-item span {
-    width: 100%;
+    flex: 1;
     height: 12px;
+    font-weight: 100;
     font-size: 1.2rem;
     text-align: center;
     line-height: 1.2rem;
+    white-space: nowrap;
     text-transform: uppercase;
 }
 
@@ -888,6 +898,7 @@
 /* Content container */
 .content__container {
     width: 100%;
+    padding: 0 4vw 0;
 }
 
 .container__tab {
@@ -992,7 +1003,7 @@ label .container__header-icon {
     transform: translateY(1px);
 }
 
-#container__header-input {
+.container__header-input {
     height: 100%;
     width: 100%;
     border-radius: 20px;
@@ -1168,7 +1179,7 @@ label .container__header-icon {
     padding: 10px;
     cursor: pointer;
     box-shadow: 0 1px 1px var(--bg-color);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--bg-content-color);
 }
 
 .playlist__list-song:hover,
@@ -1284,6 +1295,12 @@ label .container__header-icon {
 .play-song--actions {
     background: rgba(0,0,0,0.5);
     display: none;
+    height: 100%;
+}
+
+.play-song--actions .control-btn {
+    height: 100%;
+    min-width: unset;
 }
 
 
@@ -1807,20 +1824,6 @@ label .container__header-icon {
     display: block;
 }
 
-
-.volume__background {
-    content: "";
-    display: none;
-    width: 134%;
-    height: 25px;
-    border-radius: 10px;
-    background-color: #353535;
-    position: absolute;
-    top: -169%;
-    right: -16%;
-    z-index: -1;
-}
-
 .volume:active .volume__range.horizontal ~ .volume__background,
 .volume:hover .volume__range.horizontal ~ .volume__background {
     display:block;
@@ -1843,17 +1846,6 @@ label .container__header-icon {
 }
 
 
-.volume__range::before {
-    position: absolute;
-    content: "";
-    display: block;
-    width: 150%;
-    height: 60px;
-    position:absolute;
-    top: -30px;
-    right: -30%;
-    z-index: -1;
-}
 
 .volume:hover .volume__range,
 .volume:active .volume__range {
@@ -2534,6 +2526,11 @@ label .container__header-icon {
     font-size: 4.5rem;
 }
 
+.btn--fav-artist .btn-toggle-play i {
+    color: var(--white-color);
+    border-color: var(--white-color);
+}
+
 
 
 /* Explore container footer */
@@ -2891,4 +2888,43 @@ label .container__header-icon {
 
 .story__item-img {
     width: 100%;
+}
+
+.story__item-action {
+    display: flex;
+    margin-top: 12px;
+}
+
+.story__item-action .action-btn {
+    padding: 0;
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+}
+
+.story__item-action .action-btn:first-child {
+    margin-right: 25px;
+}
+
+.action__number {
+    min-width: 30px;
+    font-size: 1.4rem;
+    line-height: 1.8rem;
+}
+
+.story__item-action .action-btn:hover {
+    background-color: transparent;
+}
+
+.story__item-action .action-btn i {
+    margin-right: 5px;
+}
+
+.story__item-action .action-btn:first-child i {
+    font-size: 1.6rem;
+}
+
+.story__item-action .action-btn:last-child i {
+    transform: translateY(-1px);
 }

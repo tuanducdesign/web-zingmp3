@@ -29,8 +29,8 @@
     
 
     /* Container content */
-    .content {
-        padding: 205px 5vw 0;
+    .content__container {
+        padding: 0px 5vw 0;
     }
 
 
@@ -84,7 +84,9 @@
         display: none;
     }
 
-
+    .sidebar__logo-img {
+        margin-left: 23px;
+    }
 
 
     .app__sidebar.expand {
@@ -529,6 +531,9 @@
     .player__popup {
         height: 100%;
         top: calc(100% + 90px);
+    }
+    .player.open-popup .player__popup {
+        z-index: 501;
     }
 
     .player__logo-img {
